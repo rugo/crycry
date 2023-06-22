@@ -8,33 +8,42 @@ arg_parser = argparse.ArgumentParser(
 arg_parser.add_argument(
     "-k", "--key",
     help="Hex encoded key used for XOR. If key is shorter than input, it will be wrapped.",
-    required=True
+    # required=True
 )
 
-arg_parser.add_argument('infile', nargs='?', type=argparse.FileType('rb'), default=sys.stdin.buffer)
-arg_parser.add_argument('outfile', nargs='?', type=argparse.FileType('wb'), default=sys.stdout.buffer)
+arg_parser.add_argument('infile', nargs='*', type=argparse.FileType('rb'), default=[sys.stdin.buffer])
+arg_parser.add_argument('--output', nargs='?', type=argparse.FileType('wb'), default=sys.stdout.buffer)
 
 
-def xor(input_raw, key):
+def xor(input_a, input_b):
     result = bytearray()
-    for i in range(len(input_raw)):
-        result.append(input_raw[i] ^ key[i % len(key)])
+    max_len = max(len(input_a), len(input_b))
+
+    for i in range(max_len):
+        result.append(input_a[i % len(input_a)] ^ input_b[i % len(input_b)])
+
     return bytes(result)
 
 
 def main():
     args = arg_parser.parse_args()
 
-    try:
-        key_raw = bytes.fromhex(args.key)
-    except ValueError:
-        sys.stderr.write("Key is not valid hex!")
-        sys.exit(1)
+    output_raw = args.infile[0].read()
 
-    input_raw = args.infile.read()
+    for input_file in args.infile[1:]:
+        input_raw = input_file.read()
+        output_raw = xor(input_raw, output_raw)
 
-    output_raw = xor(input_raw, key_raw)
-    args.outfile.write(output_raw)
+    if args.key:
+        try:
+            key_raw = bytes.fromhex(args.key)
+        except ValueError:
+            sys.stderr.write("Key is not valid hex!")
+            sys.exit(1)
+
+        output_raw = xor(output_raw, key_raw)
+
+    args.output.write(output_raw)
 
 
 if __name__ == '__main__':
