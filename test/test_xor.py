@@ -2,7 +2,7 @@ import unittest
 from crycry.xor import xor
 
 
-class TestBase32(unittest.TestCase):
+class TestXOR(unittest.TestCase):
 
     def test_properties(self):
         a = b"\xaf\xaf"
