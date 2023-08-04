@@ -29,7 +29,6 @@ def construct_rsa(prime1, prime2, e):
     n = p * q
     phi = (p - 1) * (q - 1)
 
-    e = 7
     d = pow(e, -1, phi)
 
     privkey = RSA.construct((n, e, d))
