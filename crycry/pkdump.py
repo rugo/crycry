@@ -1,4 +1,5 @@
 from Crypto.PublicKey import ECC, RSA
+import ecdsa
 
 import sys
 import argparse
@@ -31,6 +32,46 @@ def print_ecc(key_data):
         print(f"Private Scalar: d={key.d}")
 
 
+def test_ecc_ecdsa_formats(key_data):
+    if key_data.startswith(b"---"):
+        try:
+            return ecdsa.SigningKey.from_pem(key_data)
+        except Exception:
+            pass
+        try:
+            return ecdsa.VerifyingKey.from_pem(key_data)
+        except Exception:
+            pass
+
+    try:
+        return ecdsa.SigningKey.from_der(key_data)
+    except Exception:
+        pass
+    try:
+        return ecdsa.VerifyingKey.from_der(key_data)
+    except Exception:
+        pass
+
+
+def print_ecc_ecdsa(key_data):
+    key = test_ecc_ecdsa_formats(key_data)
+
+    if not key:
+        raise ValueError("Invalid key.")
+
+    if isinstance(key, ecdsa.VerifyingKey):
+        x, y = key.pubkey.x(), key.pubkey.y()
+    else:
+        x, y = key.verifying_key.pubkey.point.x(), key.verifying_key.pubkey.point.y()
+
+    print(f"Curve: {key.curve.name}")
+    print(f"Public Point x values: Q.x={x}")
+    print(f"Public Point y values: Q.y={y}")
+
+    if isinstance(key, ecdsa.SigningKey):
+        print(f"Private Scalar: d={key.privkey.secret_multiplier}")
+
+
 def main():
     args = arg_parser.parse_args()
 
@@ -46,7 +87,15 @@ def main():
         print_ecc(input_raw)
         exit(0)
     except ValueError:
-        pass  # Not an RSA key, try ECC
+        pass  # Not ECC common, try other encoding
+
+    try:
+        print_ecc_ecdsa(input_raw)
+        exit(0)
+    except ValueError:
+        pass
+
+
 
     print("Unsupported key format.", file=sys.stderr)
 
