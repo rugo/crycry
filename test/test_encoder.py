@@ -1,14 +1,14 @@
 import unittest
 
-from crycry import encoder
+from crycry import encode
 
 
 class EncoderTest:
     def encode_func(self, inp):
-        return encoder.encode(inp, self.mode)
+        return encode.encode(inp, self.mode)
 
     def decode_func(self, inp):
-        return encoder.decode(inp, self.mode)
+        return encode.decode(inp, self.mode)
 
     def test_encode(self):
         for plain, enc in self.testcases:
@@ -25,7 +25,7 @@ class EncoderTest:
 
 class TestBase16(EncoderTest, unittest.TestCase):
     def setUp(self):
-        self.mode = encoder.Mode.Base16
+        self.mode = encode.Mode.Base16
         self.testcases = [
             (b"\xaf\xfe" * 10, b"affe" * 10),
             (b"\x00" * 17, b"00" * 17)
@@ -34,7 +34,7 @@ class TestBase16(EncoderTest, unittest.TestCase):
 
 class TestBase32(EncoderTest, unittest.TestCase):
     def setUp(self):
-        self.mode = encoder.Mode.Base32
+        self.mode = encode.Mode.Base32
         self.testcases = [
             (b"yolo123", b"PFXWY3ZRGIZQ===="),
             (b"yolo12", b"PFXWY3ZRGI======")
@@ -43,7 +43,7 @@ class TestBase32(EncoderTest, unittest.TestCase):
 
 class TestBase64(EncoderTest, unittest.TestCase):
     def setUp(self):
-        self.mode = encoder.Mode.Base64
+        self.mode = encode.Mode.Base64
         self.testcases = [
             (b"You make me feel good", b"WW91IG1ha2UgbWUgZmVlbCBnb29k"),
             (b"You make me feel goo", b"WW91IG1ha2UgbWUgZmVlbCBnb28="),
@@ -53,7 +53,7 @@ class TestBase64(EncoderTest, unittest.TestCase):
 
 class TestBase2(EncoderTest, unittest.TestCase):
     def setUp(self):
-        self.mode = encoder.Mode.Base2
+        self.mode = encode.Mode.Base2
         self.testcases = [
             (b"Hallo was geht bei dir?", b"010010000110000101101100011011000110111100100000011101110110000101110011001"
                                          b"000000110011101100101011010000111010000100000011000100110010101101001001000"
@@ -68,13 +68,13 @@ class TestBase2(EncoderTest, unittest.TestCase):
             b"01100101 01101001 00100000 01100100 01101001 01110010 00111111"
 
         self.assertEqual(
-            encoder.binstr_to_bytes(b),
+            encode.binstr_to_bytes(b),
             a
         )
 
     def test_bad_len(self):
         with self.assertRaises(ValueError):
-            encoder.binstr_to_bytes(b"1" * 7)
+            encode.binstr_to_bytes(b"1" * 7)
 
 
 if __name__ == "__main__":
