@@ -6,7 +6,7 @@ Example usage:
 
 ```
 cc-xor /etc/passwd /etc/hosts|cc-encode --base64
-``
+```
 
 
 ## Install
