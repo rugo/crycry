@@ -7,19 +7,7 @@ setup(
         'pycryptodome',
         'ecdsa',
     ],
-    scripts=[
-        'crycry/encode.py',
-        'crycry/count.py',
-        'crycry/ecdsareuse.py',
-        'crycry/ecdsasign.py',
-        'crycry/encode.py',
-        'crycry/flip.py',
-        'crycry/hash.py',
-        'crycry/pad.py',
-        'crycry/pkdump.py',
-        'crycry/rsaconstruct.py',
-        'crycry/xor.py'
-    ],
+    packages = ['crycry'],
     entry_points={
         'console_scripts': [
             'cc-encode = crycry.encode:main',
