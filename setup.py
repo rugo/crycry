@@ -11,6 +11,9 @@ setup(
     entry_points={
         'console_scripts': [
             'cc-encode = crycry.encode:main',
+            'cc-decode = crycry.encode:main',
+            'cc-prefix = crycry.prefix:main',
+            'cc-suffix = crycry.suffix:main',
             'cc-count = crycry.count:main',
             'cc-ecdsareuse = crycry.ecdsareuse:main',
             'cc-ecdsasign = crycry.ecdsasign:main',
