@@ -6,13 +6,17 @@ Example usage:
 
 ```
 cc-xor /etc/passwd /etc/hosts|cc-encode --base64
+
+cc-echo Hello World|cc-encode|cc-decode
+
+cc-pkdump privkey.pem
 ```
 
 
 ## Install
-To install, clone the repo and then run:
+You can install CryCry using pip:
 
 ```
-pip install .
+pip install git+https://github.com/rugo/crycry.git
 ```
 
