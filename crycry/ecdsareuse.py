@@ -44,15 +44,24 @@ def decode_sig(sig, curve):
 
 
 def compute_secret(curve, hashfunc, msg1, sig1, msg2, sig2):
+    try:
+        msg1 = bytes.fromhex(msg1)
+        msg2 = bytes.fromhex(msg2)
+        sig1 = bytes.fromhex(sig1)
+        sig2 = bytes.fromhex(sig2)
+    except ValueError:
+        print("Signatures and messages have to be hex encoded!", file=sys.stderr)
+        return
+
     r1, s1 = decode_sig(
-        bytes.fromhex(sig1), curve
+        sig1, curve
     )
-    z1 = string_to_number(hashlib.new(hashfunc, msg1.encode()).digest())
+    z1 = string_to_number(hashlib.new(hashfunc, msg1).digest())
 
     r2, s2 = decode_sig(
-        bytes.fromhex(sig2), curve
+        sig2, curve
     )
-    z2 = string_to_number(hashlib.sha1(msg2.encode()).digest())
+    z2 = string_to_number(hashlib.sha1(msg2).digest())
 
     if r1 != r2:
         print("Signatures do not suffer from nonce reuse.", file=sys.stderr)
@@ -64,6 +73,7 @@ def compute_secret(curve, hashfunc, msg1, sig1, msg2, sig2):
 
     sk = SigningKey.from_secret_exponent(secret_key, curve)
     return sk.to_pem()
+
 
 def main():
     args = arg_parser.parse_args()

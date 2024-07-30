@@ -3,16 +3,12 @@ import argparse
 import hashlib
 
 import ecdsa
-from ecdsa import curves
 
-
-CURVES = {}
-for c in curves.curves:
-    CURVES[c.name] = c
 
 arg_parser = argparse.ArgumentParser(
-    description="Tool to generate private keys from ECDSA signatures with reused nonce."
+    description="Tool to sign something using an ecdsa private key."
 )
+
 
 arg_parser.add_argument(
     "--hash",
