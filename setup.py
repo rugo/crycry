@@ -22,8 +22,7 @@ setup(
             'cc-pad = crycry.pad:main',
             'cc-pkdump = crycry.pkdump:main',
             'cc-rsaconstruct = crycry.rsaconstruct:main',
-            'cc-xor = crycry.xor:main',
-            'cc-echo = crycry.echo:main',
+            'cc-xor = crycry.xor:main'
         ]
     }
 )
