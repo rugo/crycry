@@ -4,6 +4,9 @@ import argparse
 from enum import Enum
 from string import whitespace
 from urllib.parse import unquote_to_bytes, quote_from_bytes
+import codecs
+
+codecs.escape_decode
 
 arg_parser = argparse.ArgumentParser(
     description="Tool for encoding and decoding files on the command line."
@@ -16,6 +19,7 @@ class Mode(Enum):
     Base64 = "base64"
     Base2 = "base2"
     URL = "url"
+    ESCAPE = "escape"
 
 
 arg_parser.add_argument("-d", help="Decode instead of encode.", action="store_true")
@@ -24,6 +28,7 @@ arg_parser.add_argument("--base32", help="Use base32 instead of base16.", dest="
 arg_parser.add_argument("--base16", help="Use base16 (hex). This is the default.", dest="mode", action="store_const", const=Mode.Base16)
 arg_parser.add_argument("--base2", help="Use base2 (binary).", dest="mode", action="store_const", const=Mode.Base2)
 arg_parser.add_argument("--url", help="Use url encoding.", dest="mode", action="store_const", const=Mode.URL)
+arg_parser.add_argument("--escape", help="Use backslash escape encoding.", dest="mode", action="store_const", const=Mode.ESCAPE)
 
 arg_parser.add_argument('infile', nargs='?', type=argparse.FileType('rb'), default=sys.stdin.buffer)
 arg_parser.add_argument('outfile', nargs='?', type=argparse.FileType('wb'), default=sys.stdout.buffer)
@@ -72,6 +77,8 @@ def encode(input_raw, mode):
         output_raw = bytes_to_binstr(input_raw)
     elif mode == Mode.URL:
         output_raw = quote_from_bytes(input_raw).encode()
+    elif mode == Mode.ESCAPE:
+        output_raw = codecs.escape_encode(input_raw)[0]
     else:
         raise ValueError("Invalid mode chosen.")
 
@@ -89,6 +96,8 @@ def decode(input_raw, mode):
         output_raw = binstr_to_bytes(input_raw)
     elif mode == Mode.URL:
         output_raw = unquote_to_bytes(input_raw)
+    elif mode == Mode.ESCAPE:
+        output_raw = codecs.escape_decode(input_raw)[0]
     else:
         raise ValueError("Invalid mode chosen.")
 
